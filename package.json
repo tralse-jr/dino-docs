@@ -1,5 +1,5 @@
 {
-  "name": "@tralse-jr/dino-docs",
+  "name": "@tralse-jr/dino-docs-api",
   "version": "1.0.0",
   "description": "Parser for DinoDocs, custom type of JSDoc, for javascript.",
   "main": "./dist/index.js",
@@ -20,14 +20,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tralse-jr/dino-docs.git"
+    "url": "git+https://github.com/tralse-jr/dino-docs-api.git"
   },
   "author": "Gio Kent",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/tralse-jr/dino-docs/issues"
+    "url": "https://github.com/tralse-jr/dino-docs-api/issues"
   },
-  "homepage": "https://github.com/tralse-jr/dino-docs#readme",
+  "homepage": "https://github.com/tralse-jr/dino-docs-api#readme",
   "devDependencies": {
     "@types/doctrine": "^0.0.9",
     "@types/express": "^4.17.21",
