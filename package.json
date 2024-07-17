@@ -1,0 +1,49 @@
+{
+  "name": "@tralse-jr/dino-docs",
+  "version": "1.0.0",
+  "description": "Parser for DinoDocs, custom type of JSDoc, for javascript.",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "test": "jest",
+    "prestart": "npm test",
+    "build": "tsup",
+    "pub": "tsup && npm publish --access=public && exit",
+    "release": "standard-version && git push --follow-tags origin main",
+    "release:minor": "standard-version --release-as minor && git push --follow-tags origin main",
+    "release:major": "standard-version --release-as major && git push --follow-tags origin main",
+    "start:dump": "cd _dump && npm run start"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tralse-jr/dino-docs.git"
+  },
+  "author": "Gio Kent",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tralse-jr/dino-docs/issues"
+  },
+  "homepage": "https://github.com/tralse-jr/dino-docs#readme",
+  "devDependencies": {
+    "@types/doctrine": "^0.0.9",
+    "@types/express": "^4.17.21",
+    "@types/fast-levenshtein": "^0.0.4",
+    "@types/jest": "^29.5.12",
+    "jest": "^29.7.0",
+    "standard-version": "^9.5.0",
+    "supertest": "^7.0.0",
+    "tsup": "^8.1.0",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@tralse/developer-logs": "^1.2.0",
+    "doctrine": "^3.0.0",
+    "express": "^4.19.2",
+    "express-validator": "^7.1.0",
+    "fast-levenshtein": "^3.0.0"
+  }
+}
