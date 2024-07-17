@@ -1,7 +1,7 @@
 import { Annotation } from "doctrine";
 import { parseJSDocComments } from "../parsers/jsDocParser";
 import { readFileAsync } from "../utils/fileUtils";
-import { Comment } from "../types";
+import { Comment, Fossils } from "../types";
 import { convertDinoDocsToJSON } from "../parsers/dinoDocParser";
 
 const extractJSDocComments = async (filename: string) => {
@@ -45,7 +45,7 @@ const processDinoDocs = async (filename: string) => {
   );
   return filteredComments
     .map((filtered) => convertDinoDocsToJSON(filtered))
-    .filter(Boolean);
+    .filter(Boolean) as Fossils[];
 };
 
 export { processDinoDocs };

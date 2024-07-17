@@ -60,7 +60,7 @@ export interface Constraints {
 }
 
 export interface Fossils extends DinoDocsTitle {
-  body?: (DinoDocsBody | null | undefined)[];
-  query?: (DinoDocsBody | null | undefined)[];
-  params?: (DinoDocsBody | null | undefined)[];
+  body?: DinoDocsBody[];
+  query?: DinoDocsBody[];
+  params?: DinoDocsBody[];
 }

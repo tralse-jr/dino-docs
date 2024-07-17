@@ -194,13 +194,13 @@ const convertDinoDocsToJSON = (comments: Comment) => {
   const parsedTitle = parseDinoDocsTitle(comments.title);
   const parsedBody = comments.body
     .map((comment) => parseDinoDocsBody(comment, "dinoBody"))
-    .filter(Boolean);
+    .filter(Boolean) as DinoDocsBody[];
   const parsedParams = comments.body
     .map((comment) => parseDinoDocsBody(comment, "dinoParams"))
-    .filter(Boolean);
+    .filter(Boolean) as DinoDocsBody[];
   const parsedQuery = comments.body
     .map((comment) => parseDinoDocsBody(comment, "dinoQuery"))
-    .filter(Boolean);
+    .filter(Boolean) as DinoDocsBody[];
 
   if (parsedTitle) {
     let result: Fossils = { ...parsedTitle };
