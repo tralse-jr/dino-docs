@@ -42,8 +42,6 @@
   "dependencies": {
     "@tralse/developer-logs": "^1.2.0",
     "doctrine": "^3.0.0",
-    "express": "^4.19.2",
-    "express-validator": "^7.1.0",
     "fast-levenshtein": "^3.0.0"
   }
 }
