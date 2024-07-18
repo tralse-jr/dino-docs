@@ -168,7 +168,7 @@ The following table outlines the valid constraints and their JSON representation
 
 - **isIn**: Similar to enum. Ensures the value is within a set of allowed values.
 
-````json
+```json
 {
 "isIn": ["value1", "value2"]
 }
@@ -180,7 +180,7 @@ The following table outlines the valid constraints and their JSON representation
 {
   "isInt": { "options": { "min": 1, "max": 10 } }
 }
-````
+```
 
 - **matches**: Specifies a regular expression pattern.
 
