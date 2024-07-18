@@ -1,7 +1,7 @@
 {
   "name": "@tralse-jr/dino-docs-api",
   "version": "1.0.0",
-  "description": "Parser for DinoDocs, custom type of JSDoc, for javascript.",
+  "description": "DinoDocs API.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -29,6 +29,7 @@
   },
   "homepage": "https://github.com/tralse-jr/dino-docs-api#readme",
   "devDependencies": {
+    "@swc/core": "^1.6.13",
     "@types/doctrine": "^0.0.9",
     "@types/express": "^4.17.21",
     "@types/express-validator": "^3.0.0",
