@@ -34,7 +34,16 @@ const filterComment = (
     : { title: null, body: [] };
 };
 
-const processDinoDocs = async (filename: string) => {
+/**
+ * Fossilizes DinoDocs.
+ *
+ * This function extracts JSDoc comments from the given file, filters them based on
+ * custom annotations, and converts the filtered comments into a schema with JSON format.
+ *
+ * @param filename - The name of the file to process.
+ * @returns A promise that resolves to an array of converted comments as Fossils.
+ */
+const processDinoDocs = async (filename: string): Promise<Fossils[]> => {
   const extractedComments = await extractJSDocComments(filename);
   const filteredComments = extractedComments.map((comment) =>
     filterComment(comment, "dinoValidator", [

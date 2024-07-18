@@ -38,8 +38,8 @@ export interface Constraints {
   isBoolean?: boolean;
   contains?: any;
   equals?: any;
-  isAfter?: any;
-  isBefore?: any;
+  isAfter?: string;
+  isBefore?: string;
   isIn?: any;
   isCreditCard?: boolean;
   isDate?: boolean;

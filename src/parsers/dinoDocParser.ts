@@ -56,10 +56,10 @@ const parseConstraints = (rawConstraints: string) => {
     regex: (value: any) => {
       constraints.matches = new RegExp(value);
     },
-    minLength: (value: any) => {
+    minlen: (value: any) => {
       constraints.isLength = { options: { min: +value } };
     },
-    maxLength: (value: any) => {
+    maxlen: (value: any) => {
       constraints.isLength = { options: { max: +value } };
     },
     min: (value: any) => {
@@ -68,19 +68,19 @@ const parseConstraints = (rawConstraints: string) => {
     max: (value: any) => {
       constraints.isFloat = { options: { max: +value } };
     },
-    isEmail: () => {
+    email: () => {
       constraints.isEmail = true;
     },
-    isURL: () => {
+    url: () => {
       constraints.isURL = true;
     },
-    isInt: () => {
+    int: () => {
       constraints.isInt = true;
     },
-    isFloat: () => {
+    float: () => {
       constraints.isFloat = true;
     },
-    isBoolean: () => {
+    bool: () => {
       constraints.isBoolean = true;
     },
     contains: (value: any) => {
@@ -89,62 +89,62 @@ const parseConstraints = (rawConstraints: string) => {
     equals: (value: any) => {
       constraints.equals = value;
     },
-    isAfter: (value: any) => {
+    afterdate: (value: any) => {
       constraints.isAfter = value;
     },
-    isBefore: (value: any) => {
+    beforedate: (value: any) => {
       constraints.isBefore = value;
     },
     isIn: (value: any) => {
       constraints.isIn = value.split("|");
     },
-    isCreditCard: () => {
+    creditcard: () => {
       constraints.isCreditCard = true;
     },
-    isDate: () => {
+    date: () => {
       constraints.isDate = true;
     },
-    isAlpha: () => {
+    alpha: () => {
       constraints.isAlpha = true;
     },
-    isAlphanumeric: () => {
+    alnum: () => {
       constraints.isAlphanumeric = true;
     },
-    isAscii: () => {
+    ascii: () => {
       constraints.isAscii = true;
     },
-    isBase64: () => {
+    base64: () => {
       constraints.isBase64 = true;
     },
-    isDataURI: () => {
+    datauri: () => {
       constraints.isDataURI = true;
     },
-    isEmpty: () => {
+    empty: () => {
       constraints.isEmpty = true;
     },
-    isHexColor: () => {
+    hex: () => {
       constraints.isHexColor = true;
     },
-    isIP: () => {
+    ip: () => {
       constraints.isIP = true;
     },
-    isISBN: () => {
+    isbn: () => {
       constraints.isISBN = true;
     },
-    isMACAddress: () => {
+    mac: () => {
       constraints.isMACAddress = true;
     },
-    isMobilePhone: () => {
+    pnum: () => {
       constraints.isMobilePhone = true;
     },
-    isUUID: () => {
+    uuid: () => {
       constraints.isUUID = true;
     },
-    isUppercase: () => {
-      constraints.isUppercase = true;
-    },
-    isLowercase: () => {
+    ucase: () => {
       constraints.isLowercase = true;
+    },
+    lcase: () => {
+      constraints.isUppercase = true;
     },
   };
 
@@ -153,11 +153,13 @@ const parseConstraints = (rawConstraints: string) => {
     .split(",")
     .forEach((constraint) => {
       const [key, value] = constraint.split("=");
-      if (constraintMap[key]) {
-        constraintMap[key](value);
+      const trimmedKey = key.trim();
+      const trimmedValue = value?.trim();
+      if (constraintMap[trimmedKey]) {
+        constraintMap[trimmedKey](trimmedValue);
       } else {
         throw new Error(
-          `Unknown constraint: <${key}>. Choose one of the valid constraints.`
+          `Unknown constraint: <${trimmedKey}>. Choose one of the valid constraints.`
         );
       }
     });
