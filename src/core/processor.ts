@@ -1,8 +1,9 @@
 import { Annotation } from "doctrine";
 import { parseJSDocComments } from "../parsers/jsDocParser";
 import { readFileAsync } from "../utils/fileUtils";
-import { Comment, Fossils } from "../types";
-import { convertDinoDocsToJSON } from "../parsers/dinoDocParser";
+import { Comment, DinoDocsBody, Fossils } from "../types";
+import { parseDinoDocsTitle } from "../parsers/dinoDocTitleParser";
+import { parseDinoDocsBody } from "../parsers/dinoDocBodyParser";
 
 const extractJSDocComments = async (filename: string) => {
   const fileContent = await readFileAsync(filename);
@@ -32,6 +33,33 @@ const filterComment = (
         })),
       }
     : { title: null, body: [] };
+};
+
+const convertDinoDocsToJSON = (comments: Comment) => {
+  const parsedTitle = parseDinoDocsTitle(comments.title);
+  const parsedBody = comments.body
+    .map((comment) => parseDinoDocsBody(comment, "dinoBody"))
+    .filter(Boolean) as DinoDocsBody[];
+  const parsedParams = comments.body
+    .map((comment) => parseDinoDocsBody(comment, "dinoParams"))
+    .filter(Boolean) as DinoDocsBody[];
+  const parsedQuery = comments.body
+    .map((comment) => parseDinoDocsBody(comment, "dinoQuery"))
+    .filter(Boolean) as DinoDocsBody[];
+
+  if (parsedTitle) {
+    let result: Fossils = { ...parsedTitle };
+    if (parsedBody && parsedBody.length > 0) {
+      result.body = parsedBody;
+    }
+    if (parsedParams && parsedParams.length > 0) {
+      result.params = parsedParams;
+    }
+    if (parsedQuery && parsedQuery.length > 0) {
+      result.query = parsedQuery;
+    }
+    return result;
+  }
 };
 
 /**
