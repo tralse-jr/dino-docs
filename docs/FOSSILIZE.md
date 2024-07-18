@@ -171,7 +171,8 @@ The following table outlines the valid constraints and their JSON representation
 ````json
 {
 "isIn": ["value1", "value2"]
-}```
+}
+```
 
 - **range**: Specifies an integer range.
 
