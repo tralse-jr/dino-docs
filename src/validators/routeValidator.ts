@@ -1,7 +1,11 @@
-const isValidRoutePath = (path: string) => {
-  const routePathRegex =
-    /^\/[a-zA-Z0-9\-._~%!$&'()*+,;=:@]+(\/[a-zA-Z0-9\-._~%!$&'()*+,;=:@]+)*\/?$/;
+import { dinoDocsBodyRegex, routePathRegex } from "../utils/regexUtils";
+
+export const isValidRoutePath = (path: string) => {
   return routePathRegex.test(path);
 };
 
-export { isValidRoutePath };
+export const matchDinoDocsBody = (str: string) => {
+  return str
+    .trim()
+    .match(dinoDocsBodyRegex);
+};
