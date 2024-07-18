@@ -53,7 +53,6 @@ export interface Constraints {
   isIP?: boolean;
   isISBN?: boolean;
   isMACAddress?: boolean;
-  isMobilePhone?: boolean;
   isUUID?: boolean;
   isLowercase?: boolean;
   isUppercase?: boolean;

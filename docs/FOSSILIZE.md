@@ -148,7 +148,6 @@ The following table outlines the valid constraints and their JSON representation
     "isIP": true,
     "isISBN": true,
     "isMACAddress": true,
-    "isMobilePhone": true,
     "isUUID": true,
     "isUppercase": true,
     "isLowercase": true
@@ -389,14 +388,6 @@ isMACAddress: Ensures the value is a MAC address.
 ```json
 {
   "isMACAddress": true
-}
-```
-
-isMobilePhone: Ensures the value is a mobile phone number.
-
-```json
-{
-  "isMobilePhone": true
 }
 ```
 

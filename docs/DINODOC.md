@@ -180,7 +180,6 @@ Here's a detailed list of constraints available for use within `@dinoBody`, `@di
 | `ip`         | ip            | none    | Validates an IP address                        |
 | `isbn`       | isbn          | none    | Validates an ISBN                              |
 | `mac`        | mac           | none    | Validates a MAC address                        |
-| `pnum`       | pnum          | none    | Validates a mobile phone number                |
 | `uuid`       | uuid          | none    | Validates a UUID                               |
 | `ucase`      | ucase         | none    | Checks if value is uppercase                   |
 | `lcase`      | lcase         | none    | Checks if value is lowercase                   |

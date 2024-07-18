@@ -134,9 +134,6 @@ const parseConstraints = (rawConstraints: string) => {
     mac: () => {
       constraints.isMACAddress = true;
     },
-    pnum: () => {
-      constraints.isMobilePhone = true;
-    },
     uuid: () => {
       constraints.isUUID = true;
     },
