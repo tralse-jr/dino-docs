@@ -42,8 +42,6 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "@tralse/developer-logs": "^1.2.0",
-    "doctrine": "^3.0.0",
-    "fast-levenshtein": "^3.0.0"
+    "doctrine": "^3.0.0"
   }
 }
