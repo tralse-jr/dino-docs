@@ -11,7 +11,7 @@ The `fossilize` method reads a file and extracts the DinoDocs annotations, conve
 ## Syntax
 
 ```javascript
-import { fossilize } from "@tralse-jr/dino-docs-api";
+import { fossilize } from "@tralsejr/dino-docs-api";
 
 const result = await fossilize("./dino.mjs");
 ```
@@ -50,7 +50,7 @@ export default router;
 And this is the test file:
 
 ```javascript
-import { fossilize } from "@tralse-jr/dino-docs-api";
+import { fossilize } from "@tralsejr/dino-docs-api";
 
 const result = await fossilize("./dino.mjs");
 console.log(JSON.stringify(result, null, 2));
@@ -169,7 +169,7 @@ The following table outlines the valid constraints and their JSON representation
 
 ```json
 {
-"isIn": ["value1", "value2"]
+  "isIn": ["value1", "value2"]
 }
 ```
 

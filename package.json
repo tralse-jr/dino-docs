@@ -1,5 +1,5 @@
 {
-  "name": "@tralse-jr/dino-docs-api",
+  "name": "@tralsejr/dino-docs-api",
   "version": "0.0.0",
   "description": "DinoDocs API.",
   "main": "./dist/index.js",
@@ -20,14 +20,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tralse-jr/dino-docs-api.git"
+    "url": "git+https://github.com/tralsejr/dino-docs-api.git"
   },
   "author": "Gio Kent",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/tralse-jr/dino-docs-api/issues"
+    "url": "https://github.com/tralsejr/dino-docs-api/issues"
   },
-  "homepage": "https://github.com/tralse-jr/dino-docs-api#readme",
+  "homepage": "https://github.com/tralsejr/dino-docs-api#readme",
   "devDependencies": {
     "@swc/core": "^1.6.13",
     "@types/doctrine": "^0.0.9",

@@ -15,8 +15,8 @@ Create an Express app and use the middleware:
 ```js
 // app.mjs
 import express from "express";
-import { fossilsToExpressMiddleware } from "@tralse-jr/dino-docs-api/kits";
-import { fossilize } from "@tralse-jr/dino-docs-api";
+import { fossilsToExpressMiddleware } from "@tralsejr/dino-docs-api/kits";
+import { fossilize } from "@tralsejr/dino-docs-api";
 
 const app = express();
 

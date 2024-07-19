@@ -1,7 +1,7 @@
 # 🦖 DinoDocs API
 
-[![NPM Version](https://img.shields.io/npm/v/%40tralse-jr%2Fdino-docs-api)](https://npmjs.org/package/@tralse-jr/dino-docs-api)
-[![NPM Downloads](https://img.shields.io/npm/dm/%40tralse-jr%2Fdino-docs-api.svg)](https://npmjs.org/package/%40tralse-jr%2Fdino-docs-api)
+[![NPM Version](https://img.shields.io/npm/v/%40tralsejr%2Fdino-docs-api)](https://npmjs.org/package/@tralsejr/dino-docs-api)
+[![NPM Downloads](https://img.shields.io/npm/dm/%40tralsejr%2Fdino-docs-api.svg)](https://npmjs.org/package/%40tralsejr%2Fdino-docs-api)
 
 Welcome to **DinoDocs API** – the ultimate tool for combining JSDoc documentation with middleware validation for your Express applications. DinoDocs API makes your APIs clear and reliable, just like a T-Rex’s roar. 🦕
 
@@ -16,7 +16,7 @@ Welcome to **DinoDocs API** – the ultimate tool for combining JSDoc documentat
 To add DinoDocs API to your project, run:
 
 ```bash
-npm install @tralse-jr/dino-docs-api
+npm install @tralsejr/dino-docs-api
 ```
 
 ## 🚀 Usage
@@ -89,7 +89,7 @@ To generate a JSON schema from your DinoDocs documentation, use the `fossilize` 
 ```javascript
 // test.mjs
 
-import { fossilize } from "@tralse-jr/dino-docs-api";
+import { fossilize } from "@tralsejr/dino-docs-api";
 
 const result = await fossilize("./app.mjs");
 console.log(JSON.stringify(result, null, 2));
