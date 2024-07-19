@@ -27,7 +27,7 @@ const fossilsToExpressMiddleware = (
     fossils.forEach((fossil) => {
       const middleware = fossilToExpressValidator(fossil);
       const method = isValidMethod(fossil.method) as Methods | undefined;
-      const path = `${baseRoutePath}${fossil.path}`;
+      const path = `${baseRoutePath}${fossil.path}`.replace(/^\/\/$/, "/");
 
       if (!method)
         throw new Error(
