@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.5](https://github.com/tralsejr/dino-docs-api/compare/v0.0.4...v0.0.5) (2024-07-19)
+
+
+### Bug Fixes
+
+* Fix bug where path "/" is getting an error message. ([ceb0cfc](https://github.com/tralsejr/dino-docs-api/commit/ceb0cfc402c68d079896bd9d0481c0a3d68335da))
+
 ### [0.0.4](https://github.com/tralsejr/dino-docs-api/compare/v0.0.3...v0.0.4) (2024-07-19)
 
 
