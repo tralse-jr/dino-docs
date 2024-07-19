@@ -5,6 +5,10 @@
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./kits": "./dist/kits/index.js"
+  },
   "scripts": {
     "test": "jest",
     "prestart": "npm test",
@@ -22,7 +26,7 @@
     "type": "git",
     "url": "git+https://github.com/tralsejr/dino-docs-api.git"
   },
-  "author": "Gio Kent",
+  "author": "Tralse Jr",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/tralsejr/dino-docs-api/issues"
