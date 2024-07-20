@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.8](https://github.com/tralsejr/dino-docs-api/compare/v0.0.7...v0.0.8) (2024-07-20)
+
+
+### Bug Fixes
+
+* Fix issue where handling array of types are causing validation issues ([5b8765c](https://github.com/tralsejr/dino-docs-api/commit/5b8765c46548d103d871fc019f5d04e1c4dd0ecd))
+
 ### [0.0.7](https://github.com/tralsejr/dino-docs-api/compare/v0.0.6...v0.0.7) (2024-07-20)
 
 ### [0.0.6](https://github.com/tralsejr/dino-docs-api/compare/v0.0.5...v0.0.6) (2024-07-20)
