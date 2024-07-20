@@ -1,9 +1,9 @@
-import { DinoDocsTitle, NameDescription } from "../types";
+import { DinoDocsCommentTitle, NameDescription } from "../types";
 import { isValidRoutePath } from "../validators/routeValidator";
 
 const parseDinoDocsTitleDescription = (
   description: string | null
-): DinoDocsTitle | undefined => {
+): DinoDocsCommentTitle | undefined => {
   if (!description) return;
 
   const [method, ...pathDescription] = description.trim().split(" ");
@@ -28,7 +28,7 @@ const parseDinoDocsTitleDescription = (
 
 const parseDinoDocsTitleNameDescription = (
   title: NameDescription | null
-): DinoDocsTitle | undefined => {
+): DinoDocsCommentTitle | undefined => {
   if (
     !title ||
     !title.name ||
@@ -41,8 +41,8 @@ const parseDinoDocsTitleNameDescription = (
 };
 
 export const parseDinoDocsTitle: {
-  (arg: string | null): DinoDocsTitle | undefined;
-  (arg: NameDescription | null): DinoDocsTitle | undefined;
+  (arg: string | null): DinoDocsCommentTitle | undefined;
+  (arg: NameDescription | null): DinoDocsCommentTitle | undefined;
 } = (arg: any) => {
   if (!arg) return;
 
@@ -58,5 +58,5 @@ export const parseDinoDocsTitle: {
     return parseDinoDocsTitleNameDescription(arg as NameDescription);
   }
 
-  return
+  return;
 };

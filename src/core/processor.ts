@@ -1,7 +1,7 @@
 import { Annotation } from "doctrine";
 import { parseJSDocComments } from "../parsers/jsDocParser";
 import { readFileAsync } from "../utils/fileUtils";
-import { Comment, DinoDocsBody, Fossils } from "../types";
+import { DinoDocsComment, DinoDocsCommentBody, Fossils } from "../types";
 import { parseDinoDocsTitle } from "../parsers/dinoDocTitleParser";
 import { parseDinoDocsBody } from "../parsers/dinoDocBodyParser";
 
@@ -14,7 +14,7 @@ const filterComment = (
   comment: Annotation,
   validTitle: string,
   validBody: string[]
-): Comment => {
+): DinoDocsComment => {
   const titleComment = comment.tags.find((tag) => tag.title === validTitle);
 
   const bodyComments = validBody.flatMap((validBodyTag) =>
@@ -35,17 +35,17 @@ const filterComment = (
     : { title: null, body: [] };
 };
 
-const convertDinoDocsToJSON = (comments: Comment) => {
+const convertDinoDocsToJSON = (comments: DinoDocsComment) => {
   const parsedTitle = parseDinoDocsTitle(comments.title);
   const parsedBody = comments.body
     .map((comment) => parseDinoDocsBody(comment, "dinoBody"))
-    .filter(Boolean) as DinoDocsBody[];
+    .filter(Boolean) as DinoDocsCommentBody[];
   const parsedParams = comments.body
     .map((comment) => parseDinoDocsBody(comment, "dinoParams"))
-    .filter(Boolean) as DinoDocsBody[];
+    .filter(Boolean) as DinoDocsCommentBody[];
   const parsedQuery = comments.body
     .map((comment) => parseDinoDocsBody(comment, "dinoQuery"))
-    .filter(Boolean) as DinoDocsBody[];
+    .filter(Boolean) as DinoDocsCommentBody[];
 
   if (parsedTitle) {
     let result: Fossils = { ...parsedTitle };

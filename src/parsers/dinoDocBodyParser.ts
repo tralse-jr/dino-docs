@@ -1,11 +1,11 @@
 import { sanitizeKey } from "../helpers/sanitizeKey";
-import { DinoDocsBody, NameDescription } from "../types";
+import { DinoDocsCommentBody, NameDescription } from "../types";
 import { matchDinoDocsBody } from "../validators/routeValidator";
 import { parseConstraints } from "./dinoDocConstraintsParser";
 
 const parseDinoDocsBodyDescription = (description: string) => {
   const match = matchDinoDocsBody(description);
-  let result: DinoDocsBody | null = null;
+  let result: DinoDocsCommentBody | null = null;
 
   if (match) {
     const [_, type, key, description, constraints] = match;
@@ -33,8 +33,11 @@ const parseDinoDocsBodyNameDescription = (
 };
 
 export const parseDinoDocsBody: {
-  (arg1: string | null): DinoDocsBody | null | undefined;
-  (arg1: NameDescription | null, arg2: string): DinoDocsBody | null | undefined;
+  (arg1: string | null): DinoDocsCommentBody | null | undefined;
+  (arg1: NameDescription | null, arg2: string):
+    | DinoDocsCommentBody
+    | null
+    | undefined;
 } = (arg1: any, arg2?: string) => {
   if (!arg1) return;
 

@@ -3,18 +3,18 @@ export interface NameDescription {
   description: string;
 }
 
-export interface Comment {
+export interface DinoDocsComment {
   title: NameDescription | null;
   body: NameDescription[] | [];
 }
 
-export interface DinoDocsTitle {
+export interface DinoDocsCommentTitle {
   method: string;
   path: string;
   description: string;
 }
 
-export interface DinoDocsBody {
+export interface DinoDocsCommentBody {
   key: string;
   type: string;
   optional: boolean;
@@ -58,8 +58,8 @@ export interface Constraints {
   isUppercase?: boolean;
 }
 
-export interface Fossils extends DinoDocsTitle {
-  body?: DinoDocsBody[];
-  query?: DinoDocsBody[];
-  params?: DinoDocsBody[];
+export interface Fossils extends DinoDocsCommentTitle {
+  body?: DinoDocsCommentBody[];
+  query?: DinoDocsCommentBody[];
+  params?: DinoDocsCommentBody[];
 }

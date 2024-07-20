@@ -1,19 +1,18 @@
-
 import { processDinoDocs } from "./core/processor";
 import {
   Fossils,
   Constraints,
-  DinoDocsBody,
-  DinoDocsTitle,
-  Comment,
+  DinoDocsCommentBody,
+  DinoDocsCommentTitle,
+  DinoDocsComment,
   NameDescription,
 } from "./types";
 export { processDinoDocs as fossilize };
 export type {
   Fossils,
   Constraints,
-  DinoDocsBody,
-  DinoDocsTitle,
-  Comment,
+  DinoDocsCommentBody as DinoDocsBody,
+  DinoDocsCommentTitle as DinoDocsTitle,
+  DinoDocsComment as Comment,
   NameDescription,
 };
