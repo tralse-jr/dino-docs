@@ -62,7 +62,6 @@ Here’s an enhanced version with DinoDocs API:
 
 ```javascript
 import express from "express";
-import { validationMiddleware } from "./middleware.mjs";
 import rootController from "./controllers/root.mjs";
 
 const app = express();
@@ -75,7 +74,7 @@ app.use(express.json());
  * @dinoParams {string} bar - This is bar.
  * @dinoQuery {string} [zen] - Optional query parameter.
  */
-app.get("/", validationMiddleware, rootController);
+app.get("/", rootController);
 
 app.listen(3000, () => {
   console.log("Listening on port 3000.");
