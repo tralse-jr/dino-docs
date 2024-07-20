@@ -41,7 +41,7 @@ const fossilsToExpressMiddleware = (
         throw new Error(`Invalid path ${path}.`);
 
       app[method](path, ...middleware);
-      log(`In ${path}: Validation middleware succesfully injected.`);
+      log(`In ${fossil.method} ${path}: Validation middleware succesfully injected.`);
     });
   } catch (error: any) {
     err(`Error: ${error.message}`);
