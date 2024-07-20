@@ -3,446 +3,283 @@ import {
   query,
   param,
   validationResult,
-  FieldMessageFactory,
   ValidationChain,
 } from "express-validator";
-import { DinoDocsBody, Fossils } from "../../types";
 import { NextFunction, Request, Response } from "express";
-import { ErrorMessage } from "express-validator/lib/base";
 import { ERROR_CODES } from "./error-codes";
 
-// Helper function for error messages
+// Helper function to create error messages
 const createErrorMessage = (key: string, message: string, code: string) => ({
   msg: `${key} ${message}`,
   code,
 });
 
-// Create validation chain
+// Apply constraints based on type
+const applyConstraints = (
+  validator: ValidationChain,
+  key: string,
+  constraints: { [key: string]: any }
+) => {
+  Object.entries(constraints).forEach(([constraint, value]) => {
+    switch (constraint) {
+      case "enum":
+      case "isIn":
+        validator
+          .isIn(value)
+          .withMessage(
+            createErrorMessage(
+              key,
+              `must be one of: ${value.join(", ")}.`,
+              ERROR_CODES[constraint.toUpperCase()]
+            )
+          );
+        break;
+      case "isInt":
+      case "isFloat":
+        validator[constraint](value).withMessage(
+          createErrorMessage(
+            key,
+            `must be ${constraint === "isInt" ? "an integer" : "a float"}${
+              value.min !== undefined && value.max !== undefined
+                ? ` between ${value.min} and ${value.max}`
+                : ""
+            }.`,
+            ERROR_CODES[constraint.toUpperCase()]
+          )
+        );
+        break;
+      case "matches":
+      case "isLength":
+      case "equals":
+      case "isAfter":
+      case "isBefore":
+        validator[constraint](value).withMessage(
+          createErrorMessage(
+            key,
+            `must ${constraint === "matches" ? "match the pattern" : ""} ${
+              constraint === "isLength"
+                ? `be between ${value.min} and ${value.max} characters`
+                : value
+            }.`,
+            ERROR_CODES[constraint.toUpperCase()]
+          )
+        );
+        break;
+      // default:
+      //   validator[constraint]().withMessage(
+      //     createErrorMessage(
+      //       key,
+      //       `must be a valid ${constraint}.`,
+      //       ERROR_CODES[constraint.toUpperCase()]
+      //     )
+      //   );
+      //   break;
+    }
+  });
+  return validator;
+};
+
+// Create validation chain for schema
 const createValidationChain = (
   locationValidator: (
     fields?: string | string[] | undefined,
-    message?: FieldMessageFactory | ErrorMessage | undefined
+    message?: any
   ) => ValidationChain,
-  key: string,
-  contents: DinoDocsBody
+  schema: any[]
 ) => {
   const validators: ValidationChain[] = [];
-  const { type, optional = false, constraints = {} } = contents;
 
-  if (!optional) {
-    validators.push(
-      locationValidator(key)
-        .exists({ checkFalsy: true })
-        .withMessage(
-          createErrorMessage(key, "is required.", ERROR_CODES.REQUIRED)
-        )
-    );
-  } else {
-    validators.push(locationValidator(key).optional({ checkFalsy: true }));
-  }
+  schema.forEach(
+    ({ key, type, optional = false, constraints = {}, nested }) => {
+      let validator = locationValidator(key);
 
-  const isArray = type.endsWith("[]");
-  const cleanType = type.replace("[]", "").toLowerCase();
-
-  if (isArray) {
-    validators.push(
-      locationValidator(key)
-        .isArray()
-        .withMessage(
-          createErrorMessage(key, "must be an array.", ERROR_CODES.ARRAY)
-        )
-    );
-  }
-
-  switch (cleanType) {
-    case "string":
-      validators.push(
-        locationValidator(key)
-          .isString()
+      if (optional) {
+        validator = validator.optional({ checkFalsy: true });
+      } else {
+        validator = validator
+          .exists({ checkFalsy: true })
           .withMessage(
-            createErrorMessage(key, "must be a string.", ERROR_CODES.STRING)
-          )
-      );
-      break;
-    case "number":
-      validators.push(
-        locationValidator(key)
-          .isNumeric()
-          .withMessage(
-            createErrorMessage(key, "must be a number.", ERROR_CODES.NUMBER)
-          )
-      );
-      break;
-    case "boolean":
-      validators.push(
-        locationValidator(key)
-          .isBoolean()
-          .withMessage(
-            createErrorMessage(key, "must be a boolean.", ERROR_CODES.BOOLEAN)
-          )
-      );
-      break;
-    case "date":
-      validators.push(
-        locationValidator(key)
-          .isDate()
-          .withMessage(
-            createErrorMessage(key, "must be a valid date.", ERROR_CODES.DATE)
-          )
-      );
-      break;
-    case "object":
-      validators.push(
-        locationValidator(key)
-          .isObject()
-          .withMessage(
-            createErrorMessage(key, "must be an object.", ERROR_CODES.OBJECT)
-          )
-      );
-      break;
-    default:
-      throw new Error(`Unknown type: ${cleanType}`);
-  }
+            createErrorMessage(key, "is required.", ERROR_CODES.REQUIRED)
+          );
+      }
 
-  // Add additional constraints
-  Object.entries(constraints).forEach(([constraint, value]) => {
-    const constraintHandlers = {
-      enum: () =>
-        validators.push(
-          locationValidator(key)
-            .isIn(value)
-            .withMessage(
-              createErrorMessage(
-                key,
-                `must be one of: ${value.join(", ")}.`,
-                ERROR_CODES.ENUM
-              )
-            )
-        ),
-      isIn: () =>
-        validators.push(
-          locationValidator(key)
-            .isIn(value)
-            .withMessage(
-              createErrorMessage(
-                key,
-                `must be one of: ${value.join(", ")}.`,
-                ERROR_CODES.IN
-              )
-            )
-        ),
-      isInt: () =>
-        validators.push(
-          locationValidator(key)
-            .isInt(
-              typeof value === "object"
-                ? { min: value.min, max: value.max }
-                : {}
-            )
-            .withMessage(
-              createErrorMessage(
-                key,
-                `must be an integer${
-                  value ? ` between ${value.min} and ${value.max}` : ""
-                }.`,
-                ERROR_CODES.INT
-              )
-            )
-        ),
-      isFloat: () =>
-        validators.push(
-          locationValidator(key)
-            .isFloat(
-              typeof value === "object"
-                ? { min: value.min, max: value.max }
-                : {}
-            )
-            .withMessage(
-              createErrorMessage(
-                key,
-                `must be a float${
-                  value ? ` between ${value.min} and ${value.max}` : ""
-                }.`,
-                ERROR_CODES.FLOAT
-              )
-            )
-        ),
-      matches: () =>
-        validators.push(
-          locationValidator(key)
-            .matches(value)
-            .withMessage(
-              createErrorMessage(
-                key,
-                `must match the pattern ${value}.`,
-                ERROR_CODES.MATCHES
-              )
-            )
-        ),
-      isLength: () =>
-        validators.push(
-          locationValidator(key)
-            .isLength(value)
-            .withMessage(
-              createErrorMessage(
-                key,
-                `must be between ${value.min} and ${value.max} characters.`,
-                ERROR_CODES.LENGTH
-              )
-            )
-        ),
-      isEmail: () =>
-        validators.push(
-          locationValidator(key)
-            .isEmail()
-            .withMessage(
-              createErrorMessage(
-                key,
-                "must be a valid email.",
-                ERROR_CODES.EMAIL
-              )
-            )
-        ),
-      isURL: () =>
-        validators.push(
-          locationValidator(key)
-            .isURL()
-            .withMessage(
-              createErrorMessage(key, "must be a valid URL.", ERROR_CODES.URL)
-            )
-        ),
-      isCreditCard: () =>
-        validators.push(
-          locationValidator(key)
-            .isCreditCard()
-            .withMessage(
-              createErrorMessage(
-                key,
-                "must be a valid credit card.",
-                ERROR_CODES.CREDIT_CARD
-              )
-            )
-        ),
-      isAlpha: () =>
-        validators.push(
-          locationValidator(key)
-            .isAlpha()
-            .withMessage(
-              createErrorMessage(
-                key,
-                "must contain only letters.",
-                ERROR_CODES.ALPHA
-              )
-            )
-        ),
-      isAlphanumeric: () =>
-        validators.push(
-          locationValidator(key)
-            .isAlphanumeric()
-            .withMessage(
-              createErrorMessage(
-                key,
-                "must contain only letters and numbers.",
-                ERROR_CODES.ALPHANUMERIC
-              )
-            )
-        ),
-      isAscii: () =>
-        validators.push(
-          locationValidator(key)
-            .isAscii()
-            .withMessage(
-              createErrorMessage(
-                key,
-                "must contain only ASCII characters.",
-                ERROR_CODES.ASCII
-              )
-            )
-        ),
-      isBase64: () =>
-        validators.push(
-          locationValidator(key)
-            .isBase64()
-            .withMessage(
-              createErrorMessage(
-                key,
-                "must be a valid base64 string.",
-                ERROR_CODES.BASE64
-              )
-            )
-        ),
-      isDataURI: () =>
-        validators.push(
-          locationValidator(key)
-            .isDataURI()
-            .withMessage(
-              createErrorMessage(
-                key,
-                "must be a valid data URI.",
-                ERROR_CODES.DATA_URI
-              )
-            )
-        ),
-      isEmpty: () =>
-        validators.push(
-          locationValidator(key)
-            .isEmpty()
-            .withMessage(
-              createErrorMessage(key, "must be empty.", ERROR_CODES.EMPTY)
-            )
-        ),
-      isHexColor: () =>
-        validators.push(
-          locationValidator(key)
-            .isHexColor()
-            .withMessage(
-              createErrorMessage(
-                key,
-                "must be a valid hex color.",
-                ERROR_CODES.HEX_COLOR
-              )
-            )
-        ),
-      isIP: () =>
-        validators.push(
-          locationValidator(key)
-            .isIP()
-            .withMessage(
-              createErrorMessage(
-                key,
-                "must be a valid IP address.",
-                ERROR_CODES.IP
-              )
-            )
-        ),
-      isISBN: () =>
-        validators.push(
-          locationValidator(key)
-            .isISBN()
-            .withMessage(
-              createErrorMessage(key, "must be a valid ISBN.", ERROR_CODES.ISBN)
-            )
-        ),
-      isMACAddress: () =>
-        validators.push(
-          locationValidator(key)
-            .isMACAddress()
-            .withMessage(
-              createErrorMessage(
-                key,
-                "must be a valid MAC address.",
-                ERROR_CODES.MAC_ADDRESS
-              )
-            )
-        ),
-      isUUID: () =>
-        validators.push(
-          locationValidator(key)
-            .isUUID()
-            .withMessage(
-              createErrorMessage(key, "must be a valid UUID.", ERROR_CODES.UUID)
-            )
-        ),
-      isUppercase: () =>
-        validators.push(
-          locationValidator(key)
-            .isUppercase()
-            .withMessage(
-              createErrorMessage(
-                key,
-                "must be uppercase.",
-                ERROR_CODES.UPPERCASE
-              )
-            )
-        ),
-      isLowercase: () =>
-        validators.push(
-          locationValidator(key)
-            .isLowercase()
-            .withMessage(
-              createErrorMessage(
-                key,
-                "must be lowercase.",
-                ERROR_CODES.LOWERCASE
-              )
-            )
-        ),
-      contains: () =>
-        validators.push(
-          locationValidator(key)
-            .contains(value)
-            .withMessage(
-              createErrorMessage(
-                key,
-                `must contain the value ${value}.`,
-                ERROR_CODES.CONTAINS
-              )
-            )
-        ),
-      equals: () =>
-        validators.push(
-          locationValidator(key)
-            .equals(value)
-            .withMessage(
-              createErrorMessage(
-                key,
-                `must equal ${value}.`,
-                ERROR_CODES.EQUALS
-              )
-            )
-        ),
-      isAfter: () =>
-        validators.push(
-          locationValidator(key)
-            .isAfter(value)
-            .withMessage(
-              createErrorMessage(
-                key,
-                `must be a date after ${value}.`,
-                ERROR_CODES.IS_AFTER
-              )
-            )
-        ),
-      isBefore: () =>
-        validators.push(
-          locationValidator(key)
-            .isBefore(value)
-            .withMessage(
-              createErrorMessage(
-                key,
-                `must be a date before ${value}.`,
-                ERROR_CODES.IS_BEFORE
-              )
-            )
-        ),
-      [key]: Function,
-    };
+      const isArray = type.endsWith("[]");
+      const cleanType = type.replace("[]", "").toLowerCase();
 
-    if (constraintHandlers[constraint]) {
-      constraintHandlers[constraint]();
-    } else {
-      throw new Error(`Unknown constraint: ${constraint}`);
+      if (isArray) {
+        validator = validator
+          .isArray()
+          .withMessage(
+            createErrorMessage(key, "must be an array.", ERROR_CODES.ARRAY)
+          );
+
+        if (cleanType === "object") {
+          validator = validator.custom((value) => {
+            if (
+              Array.isArray(value) &&
+              value.every((item) => typeof item === "object")
+            ) {
+              return true;
+            }
+            throw new Error(
+              createErrorMessage(
+                key,
+                "must be an array of objects.",
+                ERROR_CODES.ARR_OBJECT
+              ).msg
+            );
+          });
+          if (nested) {
+            nested.forEach((nestedSchema: any) => {
+              validators.push(
+                ...createValidationChain(
+                  (field) => locationValidator(`${key}.*.${field}`),
+                  [nestedSchema]
+                )
+              );
+            });
+          }
+        } else if (cleanType === "string") {
+          validator = validator.custom((value) => {
+            if (
+              Array.isArray(value) &&
+              value.every((item) => typeof item === "string")
+            ) {
+              return true;
+            }
+            throw new Error(
+              createErrorMessage(
+                key,
+                "must be an array of strings.",
+                ERROR_CODES.ARR_STRING
+              ).msg
+            );
+          });
+        } else if (cleanType === "number") {
+          validator = validator.custom((value) => {
+            if (
+              Array.isArray(value) &&
+              value.every((item) => typeof item === "number")
+            ) {
+              return true;
+            }
+            throw new Error(
+              createErrorMessage(
+                key,
+                "must be an array of numbers.",
+                ERROR_CODES.ARR_NUMBER
+              ).msg
+            );
+          });
+        } else if (cleanType === "boolean") {
+          validator = validator.custom((value) => {
+            if (
+              Array.isArray(value) &&
+              value.every((item) => typeof item === "boolean")
+            ) {
+              return true;
+            }
+            throw new Error(
+              createErrorMessage(
+                key,
+                "must be an array of boolean values.",
+                ERROR_CODES.ARR_NUMBER
+              ).msg
+            );
+          });
+        } else {
+          validator = validator.custom((value) => {
+            if (Array.isArray(value)) {
+              return true;
+            }
+            throw new Error(
+              createErrorMessage(
+                key,
+                "must be an array.",
+                ERROR_CODES.ARRAY
+              ).msg
+            );
+          });
+        }
+      } else {
+        switch (cleanType) {
+          case "string":
+            validator = validator
+              .isString()
+              .withMessage(
+                createErrorMessage(key, "must be a string.", ERROR_CODES.STRING)
+              );
+            break;
+          case "number":
+            validator = validator
+              .isNumeric()
+              .withMessage(
+                createErrorMessage(key, "must be a number.", ERROR_CODES.NUMBER)
+              );
+            break;
+          case "boolean":
+            validator = validator
+              .isBoolean()
+              .withMessage(
+                createErrorMessage(
+                  key,
+                  "must be a boolean.",
+                  ERROR_CODES.BOOLEAN
+                )
+              );
+            break;
+          case "date":
+            validator = validator
+              .isISO8601()
+              .withMessage(
+                createErrorMessage(
+                  key,
+                  "must be a valid date.",
+                  ERROR_CODES.DATE
+                )
+              );
+            break;
+          case "object":
+            validator = validator
+              .isObject()
+              .withMessage(
+                createErrorMessage(
+                  key,
+                  "must be an object.",
+                  ERROR_CODES.OBJECT
+                )
+              );
+            break;
+          default:
+            throw new Error(`Unknown type: ${cleanType}`);
+        }
+      }
+
+      applyConstraints(validator, key, constraints);
+      validators.push(validator);
     }
-  });
+  );
 
   return validators;
 };
 
-// Main function to convert fossil schema to express-validator middleware
-const fossilToExpressValidator = (fossil: Fossils) => {
+// Main function to convert schema to express-validator middleware
+const fossilToExpressValidator = (schema: {
+  body?: any[];
+  query?: any[];
+  params?: any[];
+}) => {
   const validators: ValidationChain[] = [];
 
-  const processFossil = (location: string) => {
-    fossil[location as "body" | "query" | "params"]?.forEach((contents) => {
-      const locationValidator =
-        location === "query" ? query : location === "params" ? param : body;
-      validators.push(
-        ...createValidationChain(locationValidator, contents.key, contents)
-      );
-    });
-  };
-
-  ["body", "query", "params"].forEach(processFossil);
+  if (schema.body) {
+    validators.push(...createValidationChain(body, schema.body));
+  }
+  if (schema.query) {
+    validators.push(...createValidationChain(query, schema.query));
+  }
+  if (schema.params) {
+    validators.push(...createValidationChain(param, schema.params));
+  }
 
   return [
     ...validators,
@@ -450,11 +287,11 @@ const fossilToExpressValidator = (fossil: Fossils) => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).json({
-          errors: errors.array().map((options: any) => ({
-            field: param || "",
-            message: options.msg.msg,
-            code: options.msg.code,
-            value: options.value,
+          errors: errors.array().map((error: any) => ({
+            field: error.param,
+            message: error.msg,
+            code: error.msg.code,
+            value: error.value,
           })),
         });
       }
