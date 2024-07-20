@@ -27,7 +27,10 @@ const fossilsToExpressMiddleware = (
     fossils.forEach((fossil) => {
       const middleware = fossilToExpressValidator(fossil);
       const method = isValidMethod(fossil.method) as Methods | undefined;
-      const path = `${baseRoutePath}${fossil.path}`.replace(/^\/\/$/, "/");
+      const path =
+        `${baseRoutePath}${fossil.path}`
+          .replace(/^\/\//, "/")
+          .replace(/\/$/, "") || "/";
 
       if (!method)
         throw new Error(
@@ -35,7 +38,7 @@ const fossilsToExpressMiddleware = (
         );
 
       if (!isValidRoutePath(path))
-        throw new Error(`In ${path}: Invalid path ${path}.`);
+        throw new Error(`Invalid path ${path}.`);
 
       app[method](path, ...middleware);
       log(`In ${path}: Validation middleware succesfully injected.`);
